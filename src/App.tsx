@@ -1,8 +1,27 @@
 import { RepositoryCard } from "./components/RepositoryCard";
+import { RepositoryList } from "./components/RepositoryList";
 import { SearchForm } from "./components/SearchForm";
 import type { GitHubRepository } from "./types/github";
 
 const mockRepositoryData: GitHubRepository[] = [
+  {
+    id: 10270250,
+    name: "react",
+    full_name: "facebook/react",
+    description: "The library for web and native user interfaces.",
+    stargazers_count: 240000,
+    language: "JavaScript",
+    html_url: "https://github.com/facebook/react",
+  },
+  {
+    id: 10270250,
+    name: "react",
+    full_name: "facebook/react",
+    description: "The library for web and native user interfaces.",
+    stargazers_count: 240000,
+    language: "JavaScript",
+    html_url: "https://github.com/facebook/react",
+  },
   {
     id: 10270250,
     name: "react",
@@ -51,9 +70,7 @@ function App() {
         <SearchForm onSearch={handleSearch} />
         {/*  */}
 
-        {mockRepositoryData.map((repo) => {
-          return <RepositoryCard repository={repo} />;
-        })}
+        <RepositoryList repositories={mockRepositoryData} />
       </div>
     </main>
   );

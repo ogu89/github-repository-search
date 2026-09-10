@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { GitHubRepository } from "../types/github";
 
 type RepositoryCardProps = {
