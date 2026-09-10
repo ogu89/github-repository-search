@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-type InputFormProps = {
+type SearchFormProps = {
   onSearch: (query: string) => void;
 };
 
-export function InputForm({ onSearch }: InputFormProps) {
+export function SearchForm({ onSearch }: SearchFormProps) {
   const [searchInput, setSearchInput] = useState("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
