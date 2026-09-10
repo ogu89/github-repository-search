@@ -1,66 +1,59 @@
-import { RepositoryCard } from "./components/RepositoryCard";
+import { useEffect, useState } from "react";
 import { RepositoryList } from "./components/RepositoryList";
 import { SearchForm } from "./components/SearchForm";
 import type { GitHubRepository } from "./types/github";
+import { fetchRepositories } from "./api/github";
 
-const mockRepositoryData: GitHubRepository[] = [
-  {
-    id: 10270250,
-    name: "react",
-    full_name: "facebook/react",
-    description: "The library for web and native user interfaces.",
-    stargazers_count: 240000,
-    language: "JavaScript",
-    html_url: "https://github.com/facebook/react",
-  },
-  {
-    id: 10270250,
-    name: "react",
-    full_name: "facebook/react",
-    description: "The library for web and native user interfaces.",
-    stargazers_count: 240000,
-    language: "JavaScript",
-    html_url: "https://github.com/facebook/react",
-  },
-  {
-    id: 10270250,
-    name: "react",
-    full_name: "facebook/react",
-    description: "The library for web and native user interfaces.",
-    stargazers_count: 240000,
-    language: "JavaScript",
-    html_url: "https://github.com/facebook/react",
-  },
-];
-
-function App() {
-  // const [repositories, setRepositories] = useState<Repository[]>([]);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
+export default function App() {
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
+  const [totalCount, setTotalCount] = useState<number>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearch = (query: string) => {
     console.log(query);
+    setQuery(query);
+    setPage(1);
   };
 
-  // useEffect(() => {
-  //   async function loadRepositories() {
-  //     try {
-  //       setLoading(true);
+  useEffect(() => {
+    if (!query) return;
+    // Prevent outdated requests from overwriting the latest search results.
+    let ignore = false;
 
-  //       const data = await searchRepositories(query, page);
+    async function loadRepositories() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchRepositories(query, page);
+        if (!ignore) {
+          setRepositories(data.items);
+          setTotalCount(data.total_count);
+        }
+      } catch (error) {
+        if (!ignore) {
+          setError(
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch repositories",
+          );
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
 
-  //       setRepositories(data.items);
-  //     } catch {
-  //       setError("Failed to fetch repositories");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
+    loadRepositories();
 
-  //   if (query) {
-  //     loadRepositories();
-  //   }
-  // }, [query, page]);
+    return () => {
+      ignore = true;
+    };
+  }, [query, page]);
+
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-8">
       <div className="mx-auto max-w-3xl flex flex-col items-center gap-4">
@@ -68,12 +61,37 @@ function App() {
           GitHub Repository Search
         </h1>
         <SearchForm onSearch={handleSearch} />
-        {/*  */}
 
-        <RepositoryList repositories={mockRepositoryData} />
+        {!query && (
+          <p className="text-gray-500">
+            Search for repositories to get started.
+          </p>
+        )}
+        {loading && (
+          <p role="status" className="text-gray-500">
+            Loading repositories...
+          </p>
+        )}
+        {error && (
+          <p role="alert" className="text-red-600">
+            {error}
+          </p>
+        )}
+
+        {query && !loading && !error && (
+          <>
+            <p className="text-sm text-gray-600">
+              {totalCount?.toLocaleString()} repositories found
+            </p>
+
+            {repositories.length > 0 ? (
+              <RepositoryList repositories={repositories} />
+            ) : (
+              <p className="text-gray-500">No repositories found.</p>
+            )}
+          </>
+        )}
       </div>
     </main>
   );
 }
-
-export default App;
