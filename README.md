@@ -1,75 +1,39 @@
-# React + TypeScript + Vite
+# GitHub Repository Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small app built with React, TypeScript, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Build and lint
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run build
+npm run lint
 ```
+
+## Features
+
+Search public repositories, view their details, and open them on GitHub in a new tab. Includes pagination, page-size selection, and loading, error, and empty states.
+
+## Decisions
+
+- Tailwind CSS handles styling, with the search form and pagination adapted from Flowbite examples.
+- Native `fetch` and React state keep data fetching simple for this small app. TanStack Query could be useful if caching or more complex request handling were needed.
+- The API request lives in `api/github.ts`, while `App` manages search and pagination state.
+- The input value and submitted query are separate, so the results label stays accurate while editing the input.
+- Previous and Next buttons keep pagination simple. A new search or page-size change resets to page 1.
+
+## Notes and limitations
+
+- GitHub only exposes the first 1,000 matches, so pagination is capped even when `total_count` is larger. [GitHub docs](https://docs.github.com/en/rest/search/search#about-search)
+- When `incomplete_results` is `true`, the results may be partial. The current UI displays the returned results without a separate warning. [GitHub docs](https://docs.github.com/en/rest/search/search#timeouts-and-incomplete-results)
+- Public API requests are rate-limited. Rate-limit errors use the same error message area as other request failures.
+- Outdated responses are ignored so they cannot overwrite newer results. The network requests themselves are not cancelled.
+- A submission counter allows the same query to be submitted again, including retries after an error.
+- There is no application-level cache, and search state resets on a page refresh.
+- TypeScript types describe the expected API response but do not validate the JSON at runtime.
