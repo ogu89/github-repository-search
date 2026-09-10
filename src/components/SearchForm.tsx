@@ -2,16 +2,19 @@ import { useState } from "react";
 
 type SearchFormProps = {
   onSearch: (query: string) => void;
+  loading: boolean;
 };
 
-export function SearchForm({ onSearch }: SearchFormProps) {
+export function SearchForm({ onSearch, loading }: SearchFormProps) {
   const [searchInput, setSearchInput] = useState("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (loading) return;
 
     const query = searchInput.trim();
     if (!query) return;
+
     onSearch(query);
   };
 
@@ -49,7 +52,8 @@ export function SearchForm({ onSearch }: SearchFormProps) {
 
         <button
           type="submit"
-          className="absolute bottom-1.5 right-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer"
+          disabled={loading}
+          className="absolute bottom-1.5 right-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
         >
           Search
         </button>

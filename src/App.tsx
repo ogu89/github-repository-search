@@ -73,7 +73,7 @@ export default function App() {
         <h1 className="text-3xl font-bold  text-gray-900">
           GitHub Repository Search
         </h1>
-        <SearchForm onSearch={handleSearch} />
+        <SearchForm onSearch={handleSearch} loading={loading} />
 
         {!query && (
           <p className="text-gray-500">
@@ -93,7 +93,7 @@ export default function App() {
 
         {query && !loading && !error && (
           <>
-            <p className="w-full text-center text-sm text-gray-600 [overflow-wrap:anywhere]">
+            <p className="w-full text-center text-sm text-gray-600 wrap-anywhere">
               {totalCount.toLocaleString()} repositories found for{" "}
               <span className="font-medium text-gray-900">“{query}”</span>
             </p>
