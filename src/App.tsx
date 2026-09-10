@@ -9,6 +9,8 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
+  // allow the same query to be submitted again, including retries after an error.
+  const [searchCount, setSearchCount] = useState(0);
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -18,10 +20,10 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = (query: string) => {
-    console.log(query);
-    setQuery(query);
+  const handleSearch = (newQuery: string) => {
+    setQuery(newQuery);
     setPage(1);
+    setSearchCount((count) => count + 1);
   };
 
   const handlePageSizeChange = (newPageSize: number) => {
@@ -63,7 +65,7 @@ export default function App() {
     return () => {
       ignore = true;
     };
-  }, [query, page, pageSize]);
+  }, [query, page, pageSize, searchCount]);
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-8">
