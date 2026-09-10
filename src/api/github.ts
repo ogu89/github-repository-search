@@ -5,11 +5,12 @@ const BASE_URL = "https://api.github.com";
 export async function fetchRepositories(
   query: string,
   page: number = 1,
+  pageSize: number = 10,
 ): Promise<GitHubSearchResponse> {
   const params = new URLSearchParams({
     q: query,
     page: String(page),
-    per_page: "10",
+    per_page: String(pageSize),
   });
 
   const response = await fetch(

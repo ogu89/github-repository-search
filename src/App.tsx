@@ -1,20 +1,31 @@
 import { useEffect, useState } from "react";
 import { RepositoryList } from "./components/RepositoryList";
 import { SearchForm } from "./components/SearchForm";
+import { Pagination } from "./components/Pagination";
 import type { GitHubRepository } from "./types/github";
 import { fetchRepositories } from "./api/github";
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
   const [repositories, setRepositories] = useState<GitHubRepository[]>([]);
-  const [totalCount, setTotalCount] = useState<number>();
+  const [totalCount, setTotalCount] = useState<number>(0);
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  // github search only lets us retrieve the first 1,000 matches.
+  const totalPages = Math.ceil(Math.min(totalCount, 1000) / pageSize);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSearch = (query: string) => {
     console.log(query);
     setQuery(query);
+    setPage(1);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
     setPage(1);
   };
 
@@ -27,7 +38,7 @@ export default function App() {
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchRepositories(query, page);
+        const data = await fetchRepositories(query, page, pageSize);
         if (!ignore) {
           setRepositories(data.items);
           setTotalCount(data.total_count);
@@ -52,7 +63,7 @@ export default function App() {
     return () => {
       ignore = true;
     };
-  }, [query, page]);
+  }, [query, page, pageSize]);
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-8">
@@ -81,7 +92,7 @@ export default function App() {
         {query && !loading && !error && (
           <>
             <p className="text-sm text-gray-600">
-              {totalCount?.toLocaleString()} repositories found
+              {totalCount.toLocaleString()} repositories found
             </p>
 
             {repositories.length > 0 ? (
@@ -89,6 +100,15 @@ export default function App() {
             ) : (
               <p className="text-gray-500">No repositories found.</p>
             )}
+
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              loading={loading}
+              onPageChange={setPage}
+              onPageSizeChange={handlePageSizeChange}
+            />
           </>
         )}
       </div>
