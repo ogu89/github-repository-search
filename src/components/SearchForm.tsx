@@ -50,7 +50,7 @@ export function SearchForm({ onSearch }: SearchFormProps) {
 
         <button
           type="submit"
-          className="absolute bottom-1.5 right-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="absolute bottom-1.5 right-1.5 rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer"
         >
           Search
         </button>

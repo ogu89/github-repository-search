@@ -12,7 +12,7 @@ export default function App() {
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  // github search only lets us retrieve the first 1,000 matches.
+  // github search only lets us retrieve the first 1000 matches.
   const totalPages = Math.ceil(Math.min(totalCount, 1000) / pageSize);
 
   const [loading, setLoading] = useState(false);
@@ -92,7 +92,8 @@ export default function App() {
         {query && !loading && !error && (
           <>
             <p className="text-sm text-gray-600">
-              {totalCount.toLocaleString()} repositories found
+              {totalCount.toLocaleString()} repositories found for{" "}
+              <span className="font-medium text-gray-900">“{query}”</span>
             </p>
 
             {repositories.length > 0 ? (
