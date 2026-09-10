@@ -93,7 +93,7 @@ export default function App() {
 
         {query && !loading && !error && (
           <>
-            <p className="text-sm text-gray-600">
+            <p className="w-full text-center text-sm text-gray-600 [overflow-wrap:anywhere]">
               {totalCount.toLocaleString()} repositories found for{" "}
               <span className="font-medium text-gray-900">“{query}”</span>
             </p>

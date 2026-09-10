@@ -16,11 +16,10 @@ export function SearchForm({ onSearch }: SearchFormProps) {
   };
 
   return (
-    <form className="mx-auto max-w-md" onSubmit={handleSubmit}>
+    <form className="mx-auto w-full max-w-md" onSubmit={handleSubmit}>
       <label htmlFor="search" className="sr-only">
         Search repositories
       </label>
-
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
